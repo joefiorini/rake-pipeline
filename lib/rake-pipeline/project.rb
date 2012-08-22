@@ -224,6 +224,7 @@ module Rake
         @maps = {}
         @tmpdir = "tmp"
         @invoke_mutex = Mutex.new
+        @not_found_error_page = "404.html"
         @default_output_root = @assetfile_digest = @assetfile_path = nil
       end
 
