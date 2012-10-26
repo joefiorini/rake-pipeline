@@ -107,6 +107,8 @@ module Rake
           File.read(fullpath)
         end
 
+        contents.force_encoding(encoding)
+
         # In our unit tests Rubinius returns false when the encoding is BINARY
         # The encoding type check bypasses the problem and is probably acceptable, but isn't ideal
         if encoding != "BINARY" && "".respond_to?(:encode) && !contents.valid_encoding?
