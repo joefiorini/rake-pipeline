@@ -66,7 +66,8 @@ module Rake
 
       def headers_for(path)
         mime = Rack::Mime.mime_type(File.extname(path), "text/plain")
-        { "Content-Type" => mime }
+        size = File.size(path)
+        { "Content-Type" => mime, "Content-Length" => size }
       end
     end
   end
