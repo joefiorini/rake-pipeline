@@ -4,15 +4,15 @@ describe "OrderingConcatFilter" do
 
   let(:input_files) {
     [
-      MemoryFileWrapper.new("/path/to/input", "first.txt", "UTF-8", "FIRST"),
-      MemoryFileWrapper.new("/path/to/input", "second.txt", "UTF-8", "SECOND"),
-      MemoryFileWrapper.new("/path/to/input", "last.txt", "UTF-8", "LAST")
+      MemoryFileWrapper.new("/path/to/input", "first.txt", "UTF-8", [], "FIRST"),
+      MemoryFileWrapper.new("/path/to/input", "second.txt", "UTF-8", [], "SECOND"),
+      MemoryFileWrapper.new("/path/to/input", "last.txt", "UTF-8", [], "LAST")
     ]
   }
 
   let(:output_files) {
     [
-      MemoryFileWrapper.new("/path/to/output", "all.txt", "BINARY")
+      MemoryFileWrapper.new("/path/to/output", "all.txt", "BINARY", [], "FIRSTSECONDLAST")
     ]
   }
 

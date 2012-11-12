@@ -4,8 +4,8 @@ describe "ConcatFilter" do
 
   let(:input_files) {
     [
-      MemoryFileWrapper.new("/path/to/input", "javascripts/jquery.js", "UTF-8", "jQuery = {};"),
-      MemoryFileWrapper.new("/path/to/input", "javascripts/sproutcore.js", "UTF-8", "SC = {};")
+      MemoryFileWrapper.new("/path/to/input", "javascripts/jquery.js", "UTF-8", [], "jQuery = {};"),
+      MemoryFileWrapper.new("/path/to/input", "javascripts/sproutcore.js", "UTF-8", [], "SC = {};")
     ]
   }
 
@@ -17,7 +17,7 @@ describe "ConcatFilter" do
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
 
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "application.js", "BINARY")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "application.js", "BINARY", [])]
 
     tasks = filter.generate_rake_tasks
     tasks.each(&:invoke)
@@ -32,6 +32,6 @@ describe "ConcatFilter" do
     filter.file_wrapper_class = MemoryFileWrapper
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "app.js", "BINARY")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "app.js", "BINARY", [])]
   end
 end

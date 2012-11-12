@@ -235,8 +235,26 @@ module Rake
 
       def output_wrappers(input)
         output_paths(input).map do |path|
-          file_wrapper_class.new(output_root, path, encoding)
+          if collected_wrappers.key? path
+            collected_wrappers[path].tap do |wrapper|
+              original_inputs =
+                if input.original_inputs.any?
+                  input.original_inputs
+                else
+                  [input]
+                end
+              wrapper.original_inputs.merge original_inputs
+            end
+          else
+            wrapper = file_wrapper_class.new(output_root, path, encoding,
+                                             input.original_inputs)
+            collected_wrappers[path] = wrapper
+          end
         end
+      end
+
+      def collected_wrappers
+        @collected_wrappers ||= {}
       end
 
       def output_paths(input)

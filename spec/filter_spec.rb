@@ -115,6 +115,41 @@ describe "Rake::Pipeline::Filter" do
 
       filter.output_files.should == [output_file("jquery.js"), output_file("ember.js")]
     end
+
+    describe "tracking original inputs" do
+
+      before do
+        output_name_generator = proc { |input| "application.js" }
+        filter.output_name_generator = output_name_generator
+        pipeline.add_filter(filter)
+      end
+
+      let(:original_inputs) {
+        input_files.map do |input|
+          new_path_name = input.path.gsub(/\.js/, "") + "-dev.js"
+          input.original_inputs = [input_file(new_path_name)]
+        end.flatten
+      }
+
+      it "keeps inputs' original file names" do
+        expected = filter.output_files.map{ |o| o.original_inputs.to_a }.flatten
+        expected.should == input_files.to_a
+      end
+
+      it "takes original inputs from inputs if available" do
+        filter.input_files = original_inputs
+        expected = filter.output_files.map{ |o| o.original_inputs.to_a }.flatten
+        expected.should == original_inputs.to_a
+      end
+
+      it "doesn't repeat inputs if called more than once" do
+        filter.input_files = original_inputs
+        filter.output_files
+        filter.output_files.map{|o| o.original_inputs.to_a }.flatten.should == original_inputs.to_a
+      end
+
+    end
+
   end
 
   describe "generates rake tasks" do

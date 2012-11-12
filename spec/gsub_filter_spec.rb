@@ -4,7 +4,7 @@ describe "GsubFilter" do
 
   let(:input_files) {
     [
-      MemoryFileWrapper.new("/path/to/input", "ember.js", "UTF-8", "Ember.assert"),
+      MemoryFileWrapper.new("/path/to/input", "ember.js", "UTF-8", [], "Ember.assert"),
     ]
   }
 
@@ -21,7 +21,7 @@ describe "GsubFilter" do
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
 
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8", [])]
 
 
     tasks = filter.generate_rake_tasks
@@ -44,7 +44,7 @@ describe "GsubFilter" do
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
 
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8", [])]
 
     tasks = filter.generate_rake_tasks
     tasks.each(&:invoke)
@@ -67,7 +67,7 @@ describe "GsubFilter" do
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
 
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8", [])]
 
     tasks = filter.generate_rake_tasks
     tasks.each(&:invoke)
@@ -82,6 +82,6 @@ describe "GsubFilter" do
     filter.file_wrapper_class = MemoryFileWrapper
     filter.output_root = "/path/to/output"
     filter.input_files = input_files
-    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8")]
+    filter.output_files.should == [MemoryFileWrapper.new("/path/to/output", "ember.js", "UTF-8", [])]
   end
 end

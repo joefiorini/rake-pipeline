@@ -1,6 +1,6 @@
 class Rake::Pipeline
   module SpecHelpers
-    class MemoryFileWrapper < Struct.new(:root, :path, :encoding, :body)
+    class MemoryFileWrapper < Struct.new(:root, :path, :encoding, :original_inputs, :body)
       @@files = {}
 
       def self.files
@@ -8,7 +8,7 @@ class Rake::Pipeline
       end
 
       def with_encoding(new_encoding)
-        self.class.new(root, path, new_encoding, body)
+        self.class.new(root, path, new_encoding, original_inputs, body)
       end
 
       def fullpath
@@ -19,6 +19,10 @@ class Rake::Pipeline
         @@files[fullpath] = self
         self.body = ""
         yield
+      end
+
+      def original_inputs
+        []
       end
 
       alias read body

@@ -23,13 +23,16 @@ module Rake
       #   +BINARY+ if they are declared as processing binary data.
       attr_accessor :encoding
 
+      attr_accessor :original_inputs
+
       # Create a new {FileWrapper}, passing in optional root, path, and
       # encoding. Any of the parameters can be ommitted and supplied later.
       #
       # @return [void]
-      def initialize(root=nil, path=nil, encoding="UTF-8")
+      def initialize(root=nil, path=nil, encoding="UTF-8", original_inputs=nil)
         @root, @path, @encoding = root, path, encoding
         @created_file = nil
+        @original_inputs = original_inputs
       end
 
       # Create a new {FileWrapper FileWrapper} with the same root and
@@ -39,7 +42,11 @@ module Rake
       # @param [String] encoding the encoding for the new object
       # @return [FileWrapper]
       def with_encoding(encoding)
-        self.class.new(@root, @path, encoding)
+        self.class.new(@root, @path, encoding, original_inputs)
+      end
+
+      def original_inputs
+        @original_inputs ||= Set.new([self])
       end
 
       # A {FileWrapper} is equal to another {FileWrapper} for hashing purposes
