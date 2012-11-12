@@ -1,3 +1,5 @@
+require "rake-pipeline/cli"
+
 describe "Rake::Pipeline::CLI" do
   attr_reader :project, :pipeline
 

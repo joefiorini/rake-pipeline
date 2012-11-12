@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-require "rake-pipeline"
+require "rake-pipeline/cli"
 Rake::Pipeline::CLI.start

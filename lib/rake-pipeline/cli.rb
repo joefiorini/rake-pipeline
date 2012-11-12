@@ -1,4 +1,5 @@
 require "thor"
+require "rake-pipeline"
 
 module Rake
   class Pipeline

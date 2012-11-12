@@ -10,7 +10,6 @@ require "rake-pipeline/reject_matcher"
 require "rake-pipeline/sorted_pipeline"
 require "rake-pipeline/error"
 require "rake-pipeline/project"
-require "rake-pipeline/cli"
 require "rake-pipeline/graph"
 
 if defined?(Rails::Railtie)
