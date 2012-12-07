@@ -86,11 +86,12 @@ module Rake
       # @param [String|Pipeline] assetfile_or_pipeline
       #   if this a String, create a Pipeline from the Assetfile at
       #   that path. If it's a Pipeline, just wrap that pipeline.
-      def initialize(assetfile_or_pipeline=nil)
+      def initialize(assetfile_or_pipeline=nil, &defaults)
         reset!
         if assetfile_or_pipeline.kind_of?(String)
           @assetfile_path = File.expand_path(assetfile_or_pipeline)
-          rebuild_from_assetfile(@assetfile_path)
+          @defaults = defaults
+          rebuild_from_assetfile(@assetfile_path, &defaults)
         elsif assetfile_or_pipeline
           @pipelines << assetfile_or_pipeline
         end
@@ -255,12 +256,15 @@ module Rake
       #   evaluated instead of reading the file at assetfile_path.
       #
       # @return [void]
-      def rebuild_from_assetfile(path, source=nil)
-        reset!
-        source ||= File.read(path)
-        @assetfile_digest = digest(source)
-        @assetfile_path = path
-        build { instance_eval(source, path, 1) }
+      def rebuild_from_assetfile(path, source=nil, &default_config)
+          reset!
+          source ||= File.read(path)
+          @assetfile_digest = digest(source)
+          @assetfile_path = path
+          build do
+              instance_eval &default_config if block_given?
+              instance_eval(source, path, 1)
+          end
       end
 
       # Setup the pipeline so its output files will be up to date.
