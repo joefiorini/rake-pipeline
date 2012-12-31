@@ -118,6 +118,8 @@ module Rake
       end
     end
 
+    ALLOWED_HOOKS = [:before_pipeline, :before_filter, :before_task, :after_task, :after_filter, :after_pipeline]
+
     # @return [Hash[String, String]] the directory paths for the input files
     #   and their matching globs.
     attr_accessor :inputs
@@ -144,6 +146,9 @@ module Rake
 
     # @return [Project] the Project that created this pipeline
     attr_accessor :project
+
+    attr_accessor :before_invoke
+    attr_accessor :after_invoke
 
     # @param [Hash] options
     # @option options [Hash] :inputs
@@ -205,6 +210,22 @@ module Rake
     def build(options={}, &block)
       DSL::PipelineDSL.evaluate(self, options, &block) if block
       self
+    end
+
+    def call_hook(hook, *args)
+      if self.hooks[hook].respond_to? :call
+        self.hooks[hook].call(*args)
+      end
+    end
+
+    def register_invocation_hook(name, hook=nil, &block)
+      return unless ALLOWED_HOOKS.include? name
+      self.hooks ||= {}
+      self.hooks[name] = hook || block
+    end
+
+    def hooks
+      @hooks ||= {}
     end
 
     # Copy the current pipeline's attributes over.
@@ -324,8 +345,32 @@ module Rake
 
         setup
 
-        @rake_tasks.each { |task| task.invoke }
+        self.call_hook(:before_pipeline)
+        filters.each do |filter|
+          invoke_filter_tasks(filter)
+        end
+        self.call_hook(:after_pipeline)
       end
+    end
+
+    def invoke_filter_tasks(filter)
+      if filter.respond_to? :filters
+        filter.filters.each do |filter|
+          invoke_tasks(filter)
+        end
+      else
+        invoke_tasks(filter)
+      end
+    end
+
+    def invoke_tasks(filter)
+      self.call_hook :before_filter, filter
+      filter.rake_tasks.each do |task|
+        self.call_hook(:before_task, task)
+        task.invoke
+        self.call_hook(:after_task, task)
+      end
+      self.call_hook :after_filter, filter
     end
 
     # Set up the filters and generate rake tasks. In general, this method
