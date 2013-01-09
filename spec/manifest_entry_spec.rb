@@ -31,6 +31,21 @@ describe Rake::Pipeline::ManifestEntry do
     end
   end
 
+  describe "#metadata!" do
+    it "uses metadata! to get an additional hash for merging" do
+      subject.metadata! type: "page", layout: "layout.html"
+      subject.as_json.should == {
+        :deps => {
+          "file.h" => 100,
+          "other.h" => 100
+        },
+        mtime: 200,
+        type: "page",
+        layout: "layout.html"
+      }
+    end
+  end
+
   describe "#as_json" do
     it "returns a hash representation of the entry for converting to json" do
       subject.as_json.should == {

@@ -114,6 +114,19 @@ describe Rake::Pipeline::DynamicFileTask do
       task.should_not_receive(:invoke_dynamic_block)
       task.dynamic_prerequisites.should == %w[blinky]
     end
+
+    it "sets dependency information on existing manifest entry if needed" do
+      time = Time.utc(2000)
+      manifest_entry = Rake::Pipeline::ManifestEntry.from_hash({
+        "deps" => {
+          "blinky" => time.to_i
+        },
+        "mtime" => time.to_i
+      })
+      task.manifest_entry = manifest_entry
+      task.invoke
+      task.manifest_entry.should eq(manifest_entry)
+    end
   end
 
 end

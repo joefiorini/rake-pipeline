@@ -15,14 +15,19 @@ module Rake
         entry
       end
 
-      attr_accessor :deps, :mtime
+      attr_accessor :deps, :mtime, :metadata
 
       def initialize(deps={}, mtime=nil)
         @deps, @mtime = deps, mtime
       end
 
+      def metadata!(metadata)
+        $stderr.puts "Metadata: #{metadata.inspect}"
+        @metadata = metadata
+      end
+
       def as_json
-        { :deps => @deps, :mtime => @mtime }
+        { :deps => @deps, :mtime => @mtime }.merge(metadata || {})
       end
 
       def ==(other)

@@ -84,6 +84,10 @@ module Rake
         @input_files = []
       end
 
+      def manifest_entry(output)
+        Rake::Pipeline::ManifestEntry.new
+      end
+
       # @return [Rake::Pipeline::Manifest] the manifest passed
       # to generated rake tasks. Use the pipeline's manifest
       # if this is not set
@@ -214,10 +218,15 @@ module Rake
           end
           additional_paths.each { |path| create_file_task(path) }
 
-          create_file_task(output.fullpath, inputs.map(&:fullpath)) do
+          create_file_task(output.fullpath, inputs.map(&:fullpath)) do |task|
             output.create { generate_output(inputs, output) }
+            enhance_task_with_manifest_entry(output, task)
           end
         end
+      end
+
+      def enhance_task_with_manifest_entry(output, task)
+        task.manifest_entry = manifest_entry(output)
       end
 
     private

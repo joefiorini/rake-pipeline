@@ -363,5 +363,49 @@ describe "Rake::Pipeline::Filter" do
       main_output.read.should == %[PEANUTS\n#include "header"\n]
     end
   end
+
+  describe "specifying a manifest entry" do
+    let(:filter_class) {
+      Class.new(Rake::Pipeline::Filter) do
+        attr_accessor :manifest_entry_generator
+        attr_reader :called
+
+        def manifest_entry(output)
+          manifest_entry_generator.call(output)
+        end
+
+        def generate_output(_,_); end
+      end
+    }
+    let(:filter){ filter_class.new }
+    before do
+      Rake.application = Rake::Application.new
+      filter.output_root = output_root
+      filter.input_files = input_files
+      filter.pipeline = pipeline
+    end
+
+    it "calls generate_manifest_entry" do
+      actual = nil
+      filter.manifest_entry_generator = ->(output){
+        actual = output
+        Rake::Pipeline::ManifestEntry.new
+      }
+      filter.generate_rake_tasks
+      filter.rake_tasks.first.invoke
+      actual.should eq(filter.output_files.first)
+    end
+
+    it "sets the manifest entry on the task" do
+      manifest_entry = Rake::Pipeline::ManifestEntry.new
+      filter.manifest_entry_generator = ->(output){
+        manifest_entry
+      }
+      filter.generate_rake_tasks
+      filter.rake_tasks.first.invoke
+      filter.rake_tasks.first.manifest_entry.should eq(manifest_entry)
+    end
+
+  end
 end
 

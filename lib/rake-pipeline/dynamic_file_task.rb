@@ -139,7 +139,7 @@ module Rake
         # Create a new manifest entry for each dynamic dependency.
         # When the pipeline finishes, these manifest entries will be written
         # to the file system.
-        entry = Rake::Pipeline::ManifestEntry.new
+        entry = self.manifest_entry || Rake::Pipeline::ManifestEntry.new
 
         dynamics.each do |dynamic|
           entry.deps.merge!(dynamic => mtime_or_now(dynamic).to_i)
