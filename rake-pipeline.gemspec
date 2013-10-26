@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "rake", "~> 10.0.0"
   gem.add_dependency "thor"
-  gem.add_dependency "json"
+  gem.add_dependency "json_pure"
 
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "rack-test"
